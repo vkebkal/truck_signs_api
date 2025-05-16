@@ -172,6 +172,13 @@ sudo systemctl start postgresql
 sudo -u postgres psql
 ```
 
+```bash
+# Inside psql
+CREATE USER trucksigns_user WITH PASSWORD 'supertrucksignsuser!';
+CREATE DATABASE trucksigns_db OWNER trucksigns_user;
+GRANT ALL PRIVILEGES ON DATABASE trucksigns_db TO trucksigns_user;
+```
+
 #####  ⚠️ Troubleshooting: PostgreSQL Connection Refused
 
 If you encounter this error:
