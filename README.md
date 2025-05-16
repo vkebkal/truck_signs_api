@@ -139,10 +139,6 @@ DB_USER=trucksigns_user
 DB_PASSWORD=supertrucksignsuser!
 DB_HOST=localhost
 DB_PORT=5432
-STRIPE_PUBLISHABLE_KEY=your_stripe_pub_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-EMAIL_HOST_USER=your_email@example.com
-EMAIL_HOST_PASSWORD=your_password
 ```
 
 Update `.env` with your local database settings and keys.
@@ -226,10 +222,6 @@ DOCKER_DB_USER=trucksigns_user
 DOCKER_DB_PASSWORD=supertrucksignsuser!
 DOCKER_DB_HOST=db
 DOCKER_DB_PORT=5432
-STRIPE_PUBLISHABLE_KEY=your_stripe_pub_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-EMAIL_HOST_USER=your_email@example.com
-EMAIL_HOST_PASSWORD=your_password
 ```
 
 Update `.env` with your local database settings and keys.
