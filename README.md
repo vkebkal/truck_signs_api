@@ -172,11 +172,42 @@ sudo systemctl start postgresql
 sudo -u postgres psql
 ```
 
+#####  ⚠️ Troubleshooting: PostgreSQL Connection Refused
+
+If you encounter this error:
+
+```text
+django.db.utils.OperationalError: could not connect to server: Connection refused
+```
+
+It likely means PostgreSQL is not running.
+
+#####  ✅ Solution (Local PostgreSQL):
+
 ```bash
-# Inside psql
-CREATE USER trucksigns_user WITH PASSWORD 'supertrucksignsuser!';
-CREATE DATABASE trucksigns_db OWNER trucksigns_user;
-GRANT ALL PRIVILEGES ON DATABASE trucksigns_db TO trucksigns_user;
+sudo systemctl start postgresql
+```
+
+Check status:
+
+```bash
+sudo systemctl status postgresql
+```
+
+Toy have to see : 
+
+```bash
+● postgresql.service - PostgreSQL RDBMS
+     Loaded: loaded (/usr/lib/systemd/system/postgresql.service; enabled; preset: disabled)
+     Active: active (exited) since Fri 2025-05-16 03:22:11 EDT; 2s ago
+ Invocation: 3bc870b412f84d3e844a26a9d6f7a117
+    Process: 5200 ExecStart=/bin/true (code=exited, status=0/SUCCESS)
+   Main PID: 5200 (code=exited, status=0/SUCCESS)
+   Mem peak: 1.8M
+        CPU: 9ms
+
+May 16 03:22:11 kali systemd[1]: Starting postgresql.service - PostgreSQL RDBMS...
+May 16 03:22:11 kali systemd[1]: Finished postgresql.service - PostgreSQL RDBMS.
 ```
 
 #### 6. Run Django
