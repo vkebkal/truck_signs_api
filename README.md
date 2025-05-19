@@ -78,7 +78,7 @@ The behavior of some of the views had to be modified to address functionalities 
 - **Backend:** Django 2.2.8 + DRF
 - **Database:** PostgreSQL
 - **Environment Management:** `.env`
-- **Containerization:** Docker, Docker Compose
+- **Containerization:** Docker
 
 ---
 
@@ -248,18 +248,17 @@ cd truck_signs_designs/settings
 cp simple_env_config.env .env
 ```
 
-Copy the content of the example env file that is inside the truck_signs_designs folder into a .env file:
+CCopy the content of the example env file that is inside the truck_signs_designs folder into a .env file:
 
-The new .env file should contain all the environment variables necessary to run all the django app in all the environments.
+The new .env file should contain all the environment variables necessary to run all the django app in all the environments. However, the only needed variables for the development environment to run are the following:
 
 ```env
 SECRET_KEY=your_django_secret_key
-DOCKER_SECRET_KEY=your_generated_docker_key
-DOCKER_DB_NAME=trucksigns_db
-DOCKER_DB_USER=trucksigns_user
-DOCKER_DB_PASSWORD=supertrucksignsuser!
-DOCKER_DB_HOST=db
-DOCKER_DB_PORT=5432
+DB_NAME=trucksigns_db
+DB_USER=trucksigns_user
+DB_PASSWORD=supertrucksignsuser!
+DB_HOST=localhost
+DB_PORT=5432
 ```
 
 Update `.env` with your local database settings and keys.
@@ -269,13 +268,6 @@ Update `.env` with your local database settings and keys.
 ```bash
 # Django secret key
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
-```
-
-- The DOCKER_SECRET_KEY is the docker secret key. To generate a new one see:
-
-```bash
-# Docker secret key
-python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
 - **NOTE: not required for exercise**<br/>The STRIPE_PUBLISHABLE_KEY and the STRIPE_SECRET_KEY can be obtained from a developer account in [Stripe](https://stripe.com/). 
@@ -288,14 +280,42 @@ python -c "import secrets; print(secrets.token_urlsafe(50))"
 
 #### 3. Run Docker
 
-This command reads your Dockerfile and docker-compose.yml, builds the necessary images, and prepares containers: 
+Create a Docker network:
+
 ```bash
-docker-compose build
+docker network create trucknet
 ```
 
-This starts up both the Django application (web) and PostgreSQL database (db) defined in your docker-compose.yml:
+Run PostgreSQL container:
+
 ```bash
-docker-compose up
+docker run --name db \
+  -e POSTGRES_DB=trucksigns_db \
+  -e POSTGRES_USER=trucksigns_user \
+  -e POSTGRES_PASSWORD=supertrucksignsuser! \
+  --network trucknet \
+  -p 5432:5432 \
+  -d postgres:14
+```
+
+Build the Django application Docker image:
+
+```bash
+docker build -t truck-signs-api .
+```
+
+Run the Django app:
+
+```bash
+docker run --rm -it \
+  --network trucknet \
+  -p 8000:8000 \
+  truck-signs-api
+```
+Or start the Django app in background :
+
+```bash
+docker run -d --name truck-signs-api --network trucknet -p 8000:8000 truck-signs-api
 ```
 
 #### 4. Create superuser (Optional step) 
@@ -303,41 +323,12 @@ docker-compose up
 To create a super user run:
 
 ```bash
-docker-compose exec web python manage.py createsuperuser
+docker exec -it truck-signs-api python manage.py createsuperuser
 ```
 
 #### 5. Check
 
 Congratulations =) !!! The App should be running in [http://`<your-ip>`:8000](http://<your-ip>:8000)
-
----
-
-## Useful Commands
-
-```bash
-# Run migrations
-docker-compose exec web python manage.py migrate
-```
-
-```bash
-# Create admin user
-docker-compose exec web python manage.py createsuperuser
-```
-
-```bash
-# Access shell
-docker-compose exec web python manage.py shell
-```
-
-```bash
-# Start all services
-docker-compose up
-```
-
-```bash
-# Stop all services
-docker-compose down
-```
 
 ---
 
