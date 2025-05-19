@@ -286,13 +286,21 @@ Create a Docker network:
 docker network create trucknet
 ```
 
-Run PostgreSQL container:
+To persist your PostgreSQL database data across container restarts and recreations, use a Docker named volume.
+
+Create a Docker volume named pgdata:
+```bash
+docker volume create pgdata
+```
+
+Run the PostgreSQL container with the volume mounted:
 
 ```bash
 docker run --name db \
   -e POSTGRES_DB=trucksigns_db \
   -e POSTGRES_USER=trucksigns_user \
   -e POSTGRES_PASSWORD=supertrucksignsuser! \
+  -v pgdata:/var/lib/postgresql/data \
   --network trucknet \
   -p 5432:5432 \
   -d postgres:14
